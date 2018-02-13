@@ -7,10 +7,15 @@ Automatic Swirl Detection Algorithms
 
 ## Description of Files (More information can be found in each file):
 **vortex.py**: Main programm of the implication of the swirl detection algorithms
+
 **gamma_values_mpi.py**: MPI version of the vortex.gamma_values() function
+
 **points_in_poly.py**: return all points within a polygon
+
 **swirl_lifetime.py**: using different methods to give labels to all swirls in order to estimate their lifetimes
+
 **lamb_oseen.py**: Object of a lamb_oseen vortex
+
 **test_synthetic.py**: Main program generating and testing a series of synthetic data (see reference)
 
 ## Credit:
