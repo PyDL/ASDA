@@ -1,4 +1,5 @@
 # ASDA
 Automatic Swirl Detection Algorithms
 
-# Python code has been fully developed and tested, will be uploaded soon.
+## Dependencies:
+1. Python 3 with libraries including numpy, scipy, getopt, sys, matplotlib, random, os, subprocess, multiprocessing, mahotas
