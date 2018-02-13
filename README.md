@@ -13,6 +13,10 @@ Automatic Swirl Detection Algorithms
 **lamb_oseen.py**: Object of a lamb_oseen vortex</br>
 **test_synthetic.py**: Main program generating and testing a series of synthetic data (see reference)</br>
 
+## Usage:
+Suppose you have two succesive 2d images in **(x, y)** order: data0 and data1</br>
+**First**: you need to use the pyflct package to estimate the velocity field connecting the above two images: `vx, vy, vm = flct(data0, data1, 1.0, 1.0, 10, outfile='vel.dat')`
+
 ## Credit:
 Liu, J., Nelson, C, Erdelyi, R, Automated Swirl Detection Algorithm (ASDA) and Its Application to Simulation and Observational Data, 2018
 
