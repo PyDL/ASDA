@@ -26,6 +26,7 @@ from vortex import gamma_values, center_edge, vortex_property
 3. calculate gamma1 and gamma2 values (see the reference) with `gamma1, gamma2 = gamma_values(vx, vy, factor=1)`. Alternatively, you may use `gamma_values_mpi.py` to make the calculation MUCH faster with multiple CPUs. You may specify factor as an integer greater than 1 to make preciser detection of vortex centers. But, this can be very costy and is not neccessary for high-resolution data.</br>
 4. perform the detection of vortices using `center, edge, point, peak, radius = center_edge(gamma1, gamma2, factor=1)`. center is a list containing the pixel location of all vortices in the image. edge is a list of the edges of all vortices. point is a list of all points within vortices. peak is a list of the peak gamma1 values of all vortices. radius is a list of the effective radii of all vortices.</br>
 5. use `ve, vr, vc, ia = vortex_property(center, edge, points, vx, vy, data0)` to calculate the expanding, rotating, center speeds of above vortices. ia is the average intensity from data0 of all points within each vortex.</br>
+6. **Notice**: radius, ve, vr and vc calculated above are in units of 1. Suppose for data0 and data1, the pixel size is *ds* (in units of actual physical units such as Mm, km, m...) and the time difference of *dt* (in units of second, minute, hour...), then you should use `radius * ds` and `ve * ds / dt`, `vr * ds / dt`, `vc * ds / dt` as your final results.
 
 
 
