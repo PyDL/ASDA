@@ -18,6 +18,7 @@ __maintainor__ = 'Jiajia Liu'
 __email__ = 'jj.liu@sheffield.ac.uk'
 
 import numpy as np
+import matplotlib
 import matplotlib.pyplot as plt
 import scipy as sp
 from points_in_poly import points_in_poly
@@ -97,7 +98,7 @@ def gamma_values(vx, vy, r=3, factor=1):
     return (gamma1, gamma2)
 
 
-def center_edge(gamma1, gamma2, factor=1, rmin=4):
+def center_edge(gamma1, gamma2, factor=1, rmin=4, gamma_min=0.89):
     '''
     Find vortices from gamma1, and gamma2
     Output:
@@ -108,9 +109,9 @@ def center_edge(gamma1, gamma2, factor=1, rmin=4):
         radius: equivalent radius of vortices
         All in pixel coordinates
     '''
+    matplotlib.interactive(False)
     plt.subplots()
     cs = plt.contour(gamma2.T, levels=[-2 / np.pi, 2 / np.pi])
-    plt.show()
     plt.close()
     edge = ()
     center = ()
@@ -127,7 +128,7 @@ def center_edge(gamma1, gamma2, factor=1, rmin=4):
                 dust.append(gamma1[int(p[0]), int(p[1])])
             if len(dust) > 1:
                 re = np.sqrt(np.array(ps).shape[0]/np.pi) / factor
-                if np.max(np.fabs(dust)) >= 0.89 and re >= rmin :
+                if np.max(np.fabs(dust)) >= gamma_min and re >= rmin :
                     # allow some error around 0.9
                     # vortex with radius less than 4 pixels is not reliable
                     idx = np.where(np.fabs(dust) == np.max(np.fabs(dust)))
@@ -137,6 +138,8 @@ def center_edge(gamma1, gamma2, factor=1, rmin=4):
                     points = points + (np.array(ps)/factor, )
                     peak = peak + (dust[idx], )
                     radius = radius + (re, )
+#    edge = np.array(edges, dtype=int)
+#    center = np.array(centers, dtype=int)
     return (center, edge, points, peak, radius)
 
 
