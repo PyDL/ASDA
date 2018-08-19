@@ -1,3 +1,9 @@
+## Credit:
+Liu, J., Nelson, C, Erdelyi, R, Automated Swirl Detection Algorithm (ASDA) and Its Application to Simulation and Observational Data, 2018 (https://arxiv.org/abs/1804.02931)
+
+## Anyone wish to use/modify these codes in your work, please contact me asking for permission first.
+Email: jj.liu@sheffield.ac.uk
+
 # ASDA
 Automatic Swirl Detection Algorithms
 
@@ -28,8 +34,4 @@ from vortex import gamma_values, center_edge, vortex_property
 5. use `ve, vr, vc, ia = vortex_property(center, edge, points, vx, vy, data0)` to calculate the expanding, rotating, center speeds of above vortices. ia is the average intensity from data0 of all points within each vortex.</br>
 6. **Notice**: radius, ve, vr and vc calculated above are in units of 1. Suppose for data0 and data1, the pixel size is *ds* (in units of actual physical units such as Mm, km, m...) and the time difference of *dt* (in units of second, minute, hour...), then you should use `radius * ds` and `ve * ds / dt`, `vr * ds / dt`, `vc * ds / dt` as your final results.
 
-
-
-## Credit:
-Liu, J., Nelson, C, Erdelyi, R, Automated Swirl Detection Algorithm (ASDA) and Its Application to Simulation and Observational Data, 2018 (https://arxiv.org/abs/1804.02931)
 
