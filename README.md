@@ -30,7 +30,7 @@ ASDA is a stand-alone Python package, no installation is needed.
 **lamb_oseen.py**: Object of a lamb_oseen vortex</br>
 **test_synthetic.py**: Main program generating and testing a series of synthetic data (see reference)</br>
 
-## Example of Usage:
+## Instructions for Use:
 You can also find the following steps from line 249 in `est_synthetic.py`.
 Suppose you have two succesive 2d images in **(x, y)** order: data0 and data1</br>
 1. import neccessary libraries, including:
