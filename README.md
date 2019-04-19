@@ -7,9 +7,16 @@ Email: jj.liu@sheffield.ac.uk
 # ASDA
 Automatic Swirl Detection Algorithms
 
-## Dependencies:
+## System Requirements
+### OS Requirements
+ASDA can be run on Windows, Mac OSX or Linux systems with Python 3 and the following dependencies installed.
+
+### Dependencies:
 **Python 3** with libraries including numpy, scipy, getopt, sys, matplotlib, random, os, subprocess, multiprocessing, mahotas, mpi4py (optional)</br>
 **pyflct**: https://github.com/PyDL/pyflct
+
+## Hardware Requirements:
+ASDA requires a standard computer with enough CPU and computation power depending on the dataset used. To be able to use the parallel functions, a multi-core CPU supporting the MPI libraries will be needed.
 
 ## Description of Files (More information can be found in each file):
 **vortex.py**: Main programm of the implication of the swirl detection algorithms</br>
