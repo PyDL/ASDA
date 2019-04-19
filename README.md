@@ -47,7 +47,10 @@ from vortex import gamma_values, center_edge, vortex_property
 
 ## Demo
 A demo **demo.py** is available with the demo data **demo_data.sav**:
-1. To run the demo, copy the code and data into the same folder of the ASDA code
-2. The demo data consists the following 4 variables: data0 (SOT Ca II observation at 2007-03-05T05:48:06.737), data1 (SOT Ca II observation at 2007-03-05T05:48:13.138), ds (pixel size of the observations), and dt (time difference in seconds between data0 and data1)
+1. To run the demo, copy the code and data into the same folder of the ASDA code and run `python demo.py`
+2. The demo data consists of the following 4 variables: data0 (SOT Ca II observation at 2007-03-05T05:48:06.737), data1 (SOT Ca II observation at 2007-03-05T05:48:13.138), ds (pixel size of the observations), and dt (time difference in seconds between data0 and data1)
+### Expected Output
+After running the code, you will see 3 files as the output: **vel_demo.dat** (binary file storing the calculated velocity field), **tau_demo.dat** (binary file storing tau1 and tau2), and **vortex_demo.npz** (numpy file storing the information of all deteced vortices). <\br>
+Use `vortex = dict(np.load('vortex_demo.npz'))`, you should see the variable `vortex` stores the center, edge, points, peak (tau1 value), radius, ve (average expanding/shrinking velocity), vr (average rotating speed), vc (speed of center), and ia (average observation intensity) for **52** detected swirls.
 
 
