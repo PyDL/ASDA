@@ -51,6 +51,9 @@ A demo **demo.py** is available with the demo data **demo_data.sav**:
 2. The demo data consists of the following 4 variables: data0 (SOT Ca II observation at 2007-03-05T05:48:06.737), data1 (SOT Ca II observation at 2007-03-05T05:48:13.138), ds (pixel size of the observations), and dt (time difference in seconds between data0 and data1)
 ### Expected Output
 After running the code, you will see 3 files as the output: **vel_demo.dat** (binary file storing the calculated velocity field, 6MB), **tau_demo.dat** (binary file storing tau1 and tau2, 6MB), and **vortex_demo.npz** (numpy file storing the information of all deteced vortices, 224.8 kB). </br>
+</br>
 Use `vortex = dict(np.load('vortex_demo.npz'))`, you should see the variable `vortex` stores the center, edge, points, peak (tau1 value), radius, ve (average expanding/shrinking velocity), vr (average rotating speed), vc (speed of center), and ia (average observation intensity) for **52** detected swirls.
+### Expected Running Time
+Once finished, the command line will give the time consumption of the demo code, which should be from 1 to 2 minutes on an Intel I7 4.20 GHz CPU.
 
 
