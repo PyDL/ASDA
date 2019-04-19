@@ -14,9 +14,13 @@ ASDA can be run on Windows, Mac OSX or Linux systems with Python 3 and the follo
 ### Dependencies:
 **Python 3** with libraries including numpy, scipy, getopt, sys, matplotlib, random, os, subprocess, multiprocessing, mahotas, mpi4py (optional)</br>
 **pyflct**: https://github.com/PyDL/pyflct
+**Python management softwares including Anaconda or Virtualenv are recommended**
 
 ## Hardware Requirements:
 ASDA requires a standard computer with enough CPU and computation power depending on the dataset used. To be able to use the parallel functions, a multi-core CPU supporting the MPI libraries will be needed.
+
+## Installation Guide:
+ASDA is a stand-alone Python package, no installation is needed.
 
 ## Description of Files (More information can be found in each file):
 **vortex.py**: Main programm of the implication of the swirl detection algorithms</br>
