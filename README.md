@@ -13,7 +13,7 @@ ASDA can be run on Windows, Mac OSX or Linux systems with Python 3 and the follo
 
 ### Dependencies:
 **Python 3** with libraries including numpy, scipy, getopt, sys, matplotlib, random, os, subprocess, multiprocessing, mahotas, mpi4py (optional)</br>
-**pyflct**: https://github.com/PyDL/pyflct
+**pyflct**: https://github.com/PyDL/pyflct </br>
 **Python management softwares including Anaconda or Virtualenv are recommended**
 
 ## Hardware Requirements:
