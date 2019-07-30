@@ -1,7 +1,7 @@
 ## Credit:
 Liu, J., Nelson, C, Erdelyi, R, Automated Swirl Detection Algorithm (ASDA) and Its Application to Simulation and Observational Data, ApJ, 872, 22, 2019 (https://iopscience.iop.org/article/10.3847/1538-4357/aabd34/meta)
 
-## Please contact me before using these code.
+## Please contact the author and ask for permissions before using any part of these code.
 Email: jj.liu@sheffield.ac.uk
 
 # ASDA
