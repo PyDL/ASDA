@@ -1,5 +1,5 @@
 ## Changelog
-*Nov 29 2019: v2.0 released. There are 2 significant changes:</br>
+* Nov 29 2019: v2.0 released. There are 2 significant changes:</br>
     1. the time consumed to calculate Gamma values is now 3 times shorter than v1.0. Thanks to Nobert Gyenge @gyenge. The speed is now very close to the MPI version of v1.0.</br>
     2. In points_in_poly.py, we have changed the dependency from mahotas to scikit-image. This change results in the detected radius changing by several percent. We demonstrate this is normal.</br>
     3. In vortex.py, we have changed the tool for finding contours from matplotlib to scikit-image. These 2 tools give the same result for contours, but do different interpolations. Now we convert the found contours to integers and introduce a new funtion to remove all duplicated points in the found contours. We demonstrate that, the above change don't change the number, position and center of swirls detected. But have little effect on the radius, rotating speed, and average observational value of swirls. The influence on the expanding/shrinking speed could sometimes be large considering expanding/shrinking speeds are usually very small.</br>
