@@ -3,7 +3,7 @@
 """
 Created on Tue Oct 31 14:36:09 2017
 
-Copy from Ulf Aslak's answer in the following link:
+Inspired by Ulf Aslak's answer in the following link:
     https://stackoverflow.com/questions/21339448/how-to-get
     -list-of-points-inside-a-polygon-in-python
 author: Jiajia Liu @ University of Sheffield

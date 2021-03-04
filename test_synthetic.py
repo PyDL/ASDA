@@ -12,7 +12,7 @@ Purpose: Test synthetic vortices
 __author__ = 'Jiajia Liu'
 __copyright__ = 'Copyright 2017, The Solar Physics and Space Plasma ' + \
                 'Research Center (SP2RC)'
-__license__ = 'GPLv2'
+__license__ = 'GPLv3'
 __version__ = '1.00'  # consistent with the version of the C code
 __date__ = '2018/01/18'
 __maintainor__ = 'Jiajia Liu'

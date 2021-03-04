@@ -7,13 +7,23 @@ Name: vortex.py
 Discription: Vortex detection based on Graftieaux et al. 2001
 
 @author: Jaijia Liu at University of Sheffield
+
+Nov 2019: v2.0 released. There are several significant changes:
+
+i. the time consumed to calculate Gamma values is now 3 times shorter than v1.0. Thanks to Nobert Gyenge @gyenge. The speed is now very close to the MPI version of v1.0.
+
+ii. In points_in_poly.py, we have changed the dependency from mahotas to scikit-image. This change results in the detected radius changing by several percent. We demonstrate this is normal.
+
+iii. In vortex.py, we have changed the tool for finding contours from matplotlib to scikit-image. These 2 tools give the same result for contours, but do different interpolations. Now we convert the found contours to integers and introduce a new funtion to remove all duplicated points in the found contours. We demonstrate that, the above change don't change the number, position and center of swirls detected. But have little effect on the radius, rotating speed, and average observational value of swirls. The influence on the expanding/shrinking speed could sometimes be large considering expanding/shrinking speeds are usually very small.
+
+iv. We also tested the above change with artificially generated Lamb Oseen vortices, the above change only have very little influence on the detected radius (because of change 2). All other properties of the detected vortices keep unchanged.
 """
 __author__ = 'Jiajia Liu'
 __copyright__ = 'Copyright 2017, The Solar Physics and Space Plasma ' + \
                 'Research Center (SP2RC)'
-__license__ = 'GPLv2'
-__version__ = '1.00'
-__date__ = '2017/12/07'
+__license__ = 'GPLv3'
+__version__ = '2.00'
+__date__ = '2019/11/27'
 __maintainor__ = 'Jiajia Liu'
 __email__ = 'jj.liu@sheffield.ac.uk'
 

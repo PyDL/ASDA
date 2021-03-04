@@ -8,12 +8,14 @@ Name: demo.py
 Purpose: A demo of ASDA
 
 @author: Jaijia Liu at University of Sheffield
+
+Nov 2019: update for version 2
 """
 __author__ = 'Jiajia Liu'
 __copyright__ = 'Copyright 2019, The Solar Physics and Space Plasma ' + \
                 'Research Center (SP2RC)'
 __license__ = 'GPLv3'
-__date__ = '2019/04/19'
+__date__ = '2019/11/27'
 __maintainor__ = 'Jiajia Liu'
 __email__ = 'jj.liu@sheffield.ac.uk'
 
