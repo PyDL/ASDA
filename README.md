@@ -1,5 +1,5 @@
 ## Changelog
-**March 5 2021: v2.1 released. The changes are:**
+**March 5 2021: v2.1 released. The changes are:</br>**
     1. add save_vortex and read_vortex functions to vortex.py, supports both npz and hdf5 (could be read in Matlab and IDL) formats.</br>
     2. pyflct is now included in ASDA package. **You need to install FLCT C code before pyflct works**.</br>
     3. new setup.py file, you can now install ASDA into your python environment.</br>
