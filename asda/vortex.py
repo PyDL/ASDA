@@ -8,7 +8,12 @@ Discription: Vortex detection based on Graftieaux et al. 2001
 
 @author: Jaijia Liu at University of Sheffield
 
-Nov 2019: v2.0 released. There are several significant changes:
+===================================================================
+March 2021: v2.1 released.
+read_vortex and save_vortex functions introduced. Files are in format of '.npz' or '.h5'
+
+===================================================================
+November 2019: v2.0 released. There are several significant changes:
 
 i. the time consumed to calculate Gamma values is now 3 times shorter than v1.0. Thanks to Nobert Gyenge @gyenge. The speed is now very close to the MPI version of v1.0.
 
@@ -22,7 +27,7 @@ __author__ = 'Jiajia Liu'
 __copyright__ = 'Copyright 2017, The Solar Physics and Space Plasma ' + \
                 'Research Center (SP2RC)'
 __license__ = 'GPLv3'
-__version__ = '2.00'
+__version__ = '2.1'
 __date__ = '2019/11/27'
 __maintainor__ = 'Jiajia Liu'
 __email__ = 'jj.liu@sheffield.ac.uk'
@@ -31,7 +36,7 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 import scipy as sp
-from points_in_poly import points_in_poly
+from asda.points_in_poly import points_in_poly
 from scipy.interpolate import interp2d
 from itertools import product
 from skimage import measure
@@ -327,3 +332,119 @@ def calc_gamma(pm, vel, pnorm, N):
     sint = cross / (pnorm * vel_norm + 1e-10)
 
     return np.nansum(sint, axis=1) / N
+
+
+def save_vortex(vortex, filename='vortex.h5'):
+    '''
+    Save a vortex dictionary into a hdf5 file or npz file
+    written on March 2021 by Jiajia Liu (j.liu@qub.ac.uk)
+    Parameters
+    ----------
+    vortex : dictonary
+        dictionary that contains the vortex detection result, should have
+        9 keys: center, edge, points, peak, radius, ve, vr, vc, ia
+    filename : string, optional
+        file to be saved, extension must be .h5 or npz
+
+    Returns
+    -------
+    None.
+
+    '''
+    # test keys of vortex
+    keys = vortex.keys()
+    if 'center' not in keys or 'edge' not in keys or 'points' not in keys \
+        or 'radius' not in keys or 've' not in keys or 'vr' not in keys \
+        or 'vc' not in keys:
+            raise RuntimeError('input dictionary must contain all of' + 
+                               ' the following keys: center, edge, points,' + 
+                               ' peak, radius, ve, vr, vc')
+    # check extension
+    ext = filename[filename.rfind('.'):]
+    if ext == '.h5':
+        # number of vortices
+        nvortex = len(vortex['vr'])
+        # create hdf5 file
+        file = h5py.File(filename, 'w')
+        # because points and edge are irregular in shape, they need to be groups
+        file.create_group('points')
+        file.create_group('edge')
+        for i in range(nvortex):
+            name = '{:d}'.format(i)
+            file['points'][name] = vortex['points'][i]
+            file['edge'][name] = vortex['edge'][i]
+        # all other keys can be datasets
+        file['center'] = np.array(vortex['center'])
+        file['radius'] = np.array(vortex['radius'])
+        file['peak'] = np.array(vortex['peak'])
+        file['ve'] = np.array(vortex['ve'])
+        file['vr'] = np.array(vortex['vr'])
+        file['vc'] = np.array(vortex['vc'])
+        
+        # ia is optional
+        if 'ia' in keys:
+            if None not in vortex['ia']:
+                if len(vortex['ia']) > 0:
+                    file['ia'] = np.array(vortex['ia'])
+        # rmax is optional
+        if 'rmax' in keys:
+            file['rmax'] = np.array(vortex['rmax'])
+    elif ext == '.npz':
+        np.savez(filename, **vortex)
+    else:
+        raise RuntimeError('File extension must be npz or h5')
+
+
+def read_vortex(filename='vortex.h5'):
+    '''
+    Read a vortex dictionary from a hdf5 file or npz file
+    written on March 2021 by Jiajia Liu (j.liu@qub.ac.uk)
+    Parameters
+    ----------
+    filename : string
+        file to be read, extension must be h5 or npz
+
+    Returns
+    -------
+    vortex : dictonary
+        dictionary that contains the vortex detection result
+
+    '''
+    # check extension
+    ext = filename[filename.rfind('.'):]
+    if ext == '.npz':
+        vortex = dict(np.load(filename, allow_pickle=True))
+    elif ext == '.h5':
+        vortex = {}
+        # load hdf5 file
+        file = h5py.File(filename, 'r')
+        # all other keys are datasets
+        vortex['center'] = np.array(file['center'])
+        vortex['radius'] = np.array(file['radius'])
+        vortex['peak'] = np.array(file['peak'])
+        vortex['ve'] = np.array(file['ve'])
+        vortex['vr'] = np.array(file['vr'])
+        vortex['vc'] = np.array(file['vc'])
+        # number of vortices  
+        nvortex = len(vortex['vr'])
+        # because points and edge are irregular in shape, they need to be groups
+        edge = ()
+        points = ()
+        for i in range(nvortex):
+            name = '{:d}'.format(i)
+            points = points + (np.array(file['points'][name], dtype=int), )
+            edge = edge + (np.array(file['edge'][name], dtype=int), )
+        
+        vortex['edge'] = edge
+        vortex['points'] = points
+        # ia is optional
+        keys = list(file.keys())
+        if 'ia' in keys:
+            vortex['ia'] = np.array(file['ia'])
+        # rmax is optional
+        if 'rmax' in keys:
+            vortex['rmax'] = np.array(file['rmax'])
+    else:
+        raise RuntimeError('File extension must be npz or h5')
+    
+    return vortex

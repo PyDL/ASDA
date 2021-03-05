@@ -19,15 +19,16 @@ __maintainor__ = 'Jiajia Liu'
 __email__ = 'jj.liu@sheffield.ac.uk'
 
 import numpy as np
+from asda.vortex import read_vortex, save_vortex
 
-def add_rmax(im_path, name='vortex.npz'):
+def add_rmax(im_path, filename='vortex.npz'):
 
     ds_dt = np.load(im_path + 'ds_dt.npz')
     nt = len(ds_dt['dt'])
 
     for i in range(nt):
         current = im_path + '{:d}'.format(i) + '/'
-        vortex = dict(np.load(current + name))
+        vortex = read_vortex(filename=current + filename)
         center = vortex['center']
         edge = vortex['edge']
         n = len(center)
@@ -38,7 +39,7 @@ def add_rmax(im_path, name='vortex.npz'):
             d = np.linalg.norm(np.subtract(e, c), axis=1)
             rmax.append(np.max(d))
         vortex['rmax'] = rmax
-        np.savez(current + name, **vortex)
+        save_vortex(vortex, filename=current + filename)
 
 
 if __name__ == '__main__':
@@ -50,4 +51,4 @@ if __name__ == '__main__':
     im_paths = [prefix + 'Swirl/FG-blue/',
                 prefix + 'Swirl/CaII-H/']
     for im_path in im_paths:
-        add_rmax(im_path, name='vortex.npz')
+        add_rmax(im_path, filename='vortex.npz')

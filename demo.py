@@ -23,8 +23,8 @@ __email__ = 'jj.liu@sheffield.ac.uk'
 import numpy as np
 from scipy.io import readsav
 from datetime import datetime
-from pyflct import flct, vcimageout, vcimagein
-from vortex import gamma_values, center_edge, vortex_property
+from asda.pyflct import flct, vcimageout, vcimagein
+from asda.vortex import gamma_values, center_edge, vortex_property, read_vortex, save_vortex
 import os
 import subprocess
 
@@ -66,14 +66,21 @@ center, edge, points, peak, radius = center_edge(gamma1, gamma2,
 ve, vr, vc, ia = vortex_property(center, edge, points, vx, vy,
                                  data0)
 # Save results
-np.savez('vortex_demo.npz', center=center, edge=edge,
-         points=points, peak=peak, radius=radius, ia=ia,
-         ve=ve, vr=vr, vc=vc)
+vortex = {'center': center,
+                'edge': edge,
+                'points': points,
+                'peak': peak,
+                'radius': radius,
+                've': ve,
+                'vr': vr,
+                'vc': vc,
+                'ia': ia}
+save_vortex(vortex, filename='vortex_demo.npz')
 
 # perform comparison
 # compare between detection result and correct detection result
 # number of swirls
-correct = dict(np.load('correct.npz', allow_pickle=True))
+correct = read_vortex(filename='correct.npz')
 n = len(ve)
 nc = len(correct['ve'])
 if n != nc:
