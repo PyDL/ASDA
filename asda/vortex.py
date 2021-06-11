@@ -40,6 +40,7 @@ from asda.points_in_poly import points_in_poly
 from scipy.interpolate import interp2d
 from itertools import product
 from skimage import measure
+import h5py
 
 
 def reform2d(array, factor=1):
