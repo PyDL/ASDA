@@ -1,4 +1,8 @@
 ## Changelog
+
+**June 2021: v2.2 released. The changes are:</br>**
+A new function gamma_values_parallel is added to vortex.py. It uses multiprocessing to do the parallelisation. For the data in used in demo.py, the parallel version is ~2 times faster than the v2.1 on my Macbook Pro.</br>
+
 **March 5 2021: v2.1 released. The changes are:</br>**
     1. add save_vortex and read_vortex functions to vortex.py, supports both npz and hdf5 (could be read in Matlab and IDL) formats.</br>
     2. pyflct is now included in ASDA package. **You need to install FLCT C code before pyflct works**.</br>

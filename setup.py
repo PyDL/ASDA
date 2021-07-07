@@ -12,7 +12,7 @@ def main():
     setup(
         name="ASDA",
         python_requires='>3.5.0',
-        version="2.1",
+        version="2.2",
         author="Jiajia Liu",
         author_email="j.liu@qub.ac.uk",
         description=("Automated Swirl Detection Algorithm"),
@@ -33,7 +33,7 @@ def main():
         ],
 
         classifiers=[
-            "Development Status :: 2.1 - Release",
+            "Development Status :: 2.2 - Release",
             "Topic :: Utilities",
             "License :: OSI Approved :: GNU General Public License (GPL)",
         ],
@@ -46,7 +46,7 @@ def get_py_modules():
     py_modules=[]
     for file in glob.glob('*.py'):
         py_modules.append(os.path.splitext(file)[0])
-    
+
     print(py_modules)
     return py_modules
 

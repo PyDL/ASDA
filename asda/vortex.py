@@ -9,38 +9,58 @@ Discription: Vortex detection based on Graftieaux et al. 2001
 @author: Jaijia Liu at University of Sheffield
 
 ===================================================================
+June 2021: v2.2 released.
+A new function gamma_values_parallel is added. It uses multiprocessing to do
+the parallelisation. For the data in used in demo.py, the parallel version is
+~2 times faster than the v2.1 on my Macbook Pro.
+===================================================================
 March 2021: v2.1 released.
-read_vortex and save_vortex functions introduced. Files are in format of '.npz' or '.h5'
+read_vortex and save_vortex functions introduced. Files are in format of
+'.npz' or '.h5'
 
 ===================================================================
 November 2019: v2.0 released. There are several significant changes:
 
-i. the time consumed to calculate Gamma values is now 3 times shorter than v1.0. Thanks to Nobert Gyenge @gyenge. The speed is now very close to the MPI version of v1.0.
+i. the time consumed to calculate Gamma values is now 3 times shorter than
+v1.0. Thanks to Nobert Gyenge @gyenge. The speed is now very close to the MPI
+version of v1.0.
 
-ii. In points_in_poly.py, we have changed the dependency from mahotas to scikit-image. This change results in the detected radius changing by several percent. We demonstrate this is normal.
+ii. In points_in_poly.py, we have changed the dependency from mahotas to
+scikit-image. This change results in the detected radius changing by several
+percent. We demonstrate this is normal.
 
-iii. In vortex.py, we have changed the tool for finding contours from matplotlib to scikit-image. These 2 tools give the same result for contours, but do different interpolations. Now we convert the found contours to integers and introduce a new funtion to remove all duplicated points in the found contours. We demonstrate that, the above change don't change the number, position and center of swirls detected. But have little effect on the radius, rotating speed, and average observational value of swirls. The influence on the expanding/shrinking speed could sometimes be large considering expanding/shrinking speeds are usually very small.
+iii. In vortex.py, we have changed the tool for finding contours from
+matplotlib to scikit-image. These 2 tools give the same result for contours,
+but do different interpolations. Now we convert the found contours to integers
+and introduce a new funtion to remove all duplicated points in the found
+contours. We demonstrate that, the above change don't change the number,
+position and center of swirls detected. But have little effect on the radius,
+rotating speed, and average observational value of swirls. The influence on
+the expanding/shrinking speed could sometimes be large considering
+expanding/shrinking speeds are usually very small.
 
-iv. We also tested the above change with artificially generated Lamb Oseen vortices, the above change only have very little influence on the detected radius (because of change 2). All other properties of the detected vortices keep unchanged.
+iv. We also tested the above change with artificially generated Lamb Oseen
+vortices, the above change only have very little influence on the detected
+radius (because of change 2). All other properties of the detected vortices
+keep unchanged.
 """
 __author__ = 'Jiajia Liu'
 __copyright__ = 'Copyright 2017, The Solar Physics and Space Plasma ' + \
                 'Research Center (SP2RC)'
 __license__ = 'GPLv3'
-__version__ = '2.1'
+__version__ = '2.2'
 __date__ = '2019/11/27'
 __maintainor__ = 'Jiajia Liu'
 __email__ = 'jj.liu@sheffield.ac.uk'
 
 import numpy as np
-import matplotlib
-import matplotlib.pyplot as plt
-import scipy as sp
 from asda.points_in_poly import points_in_poly
 from scipy.interpolate import interp2d
 from itertools import product
 from skimage import measure
 import h5py
+import multiprocessing as mp
+from copy import copy
 
 
 def reform2d(array, factor=1):
@@ -102,11 +122,89 @@ def remove_duplicate(edge):
             p = p.tolist()
         if p not in new_edge:
             new_edge.append(p)
-    
+
     return new_edge
 
 
-def gamma_values(vx, vy, r=3, factor=1, nthreads=1):
+def gamma_values_parallel(vx, vy, r=3, factor=1, ncpus=None):
+    '''
+    Purpose: calculate gamma1 and gamma2 values of velocity field vx, vy
+             using multiprocessing parallelisation
+
+    Inputs:
+        vx - velocity field in x direction
+        vy - velocity field in y direction
+        r - maximum distance of neighbour points from target point
+        factor - default is 2. Magnify the original data to find sub-grid
+                 vortex center and boundary
+        ncpus - number of cpus to be used, default is the maximum number of
+                cpus available
+    Outputs:
+        gamma - tuple in form of (gamma1, gamma2), where gamma1 is useful in finding
+              vortex centers and gamma2 is useful in finding vortex edges
+
+    '''
+    # do basic checks
+    vx = np.array(vx, dtype=np.float32)
+    vy = np.array(vy, dtype=np.float32)
+    if vx.shape != vy.shape:
+        print("Velocity field vx and vy do not match!")
+        return None
+    r = int(r)
+    factor = int(factor)
+    if factor > 1:
+        vx = reform2d(vx, factor=factor)
+        vy = reform2d(vy, factor=factor)
+    ny = vx.shape[1]
+    factor = 1
+    # initialise gamma
+    gamma = np.array([np.zeros_like(vx),
+                      np.zeros_like(vy)])
+    # number of threads to be used
+    if ncpus is None or ncpus <= 0:
+        ncpus = mp.cpu_count()
+
+    if ny > ncpus:
+        # initialise the multiprocess
+        manager = mp.Manager()
+        return_dict = manager.dict()
+        jobs = []
+        # slit the data
+        step = int(int(ny) / int(ncpus))
+        i0_ext = np.arange(ncpus, dtype=int) * step
+        i1_ext = (np.arange(ncpus, dtype=int) + 1) * step
+        i1_ext[-1] = ny
+        i0 = copy(i0_ext)
+        i1 = copy(i1_ext)
+        i0_ext[1:] = i0_ext[1:] - r
+        i1_ext[0:-1] = i1_ext[0:-1] + r
+        # do multiprocessing
+        for i in range(ncpus):
+            p = mp.Process(target=gamma_values, args=(vx[:, i0_ext[i]:i1_ext[i]],
+                                                      vy[:, i0_ext[i]:i1_ext[i]],
+                                                      r, factor, return_dict,
+                                                      i))
+            jobs.append(p)
+            p.start()
+
+        for proc in jobs:
+            proc.join()
+
+        # join the data
+        for i in range(ncpus):
+            if i == 0:
+                gamma[:, :, i0[i]:i1[i]] = return_dict[i][:, :, 0:-r]
+            elif i == ncpus-1:
+                gamma[:, :, i0[i]:i1[i]] = return_dict[i][:, :, r:]
+            else:
+                gamma[:, :, i0[i]:i1[i]] = return_dict[i][:, :, r:-r]
+    else:
+        gamma = gamma_values(vx, vy, r=r, factor=1)
+
+    return gamma
+
+
+def gamma_values(vx, vy, r=3, factor=1, return_values=None, procnum=None):
     '''
     Purpose: calculate gamma1 and gamma2 values of velocity field vx and vy
              Fomulars can be found in Graftieaux et al. 2001
@@ -116,6 +214,8 @@ def gamma_values(vx, vy, r=3, factor=1, nthreads=1):
         r - maximum distance of neighbour points from target point
         factor - default is 2. Magnify the original data to find sub-grid
                  vortex center and boundary
+        return_values, procnum - inputs designed to be used in
+                gamma_values_parallel().
     Outputs:
         gamma - tuple in form of (gamma1, gamma2), where gamma1 is useful in finding
               vortex centers and gamma2 is useful in finding vortex edges
@@ -165,6 +265,9 @@ def gamma_values(vx, vy, r=3, factor=1, nthreads=1):
 
         gamma[0, j, i], gamma[1, j, i] = calc_gamma(pm, vel[..., d], pnorm, N)
 
+    if (procnum is not None) and (return_values is not None):
+        return_values[procnum] = gamma
+
     return gamma
 
 
@@ -190,10 +293,6 @@ def center_edge(gamma1, gamma2, factor=1, rmin=4, gamma_min=0.89):
     points = ()
     peak = ()
     radius = ()
-    # for i in range(len(cs.collections)):
-    #     cnts = cs.collections[i].get_paths()
-    #     for c in cnts:
-    #         v = np.rint(c.vertices).tolist()
     cs = np.array(measure.find_contours(gamma2, -2 / np.pi))
     cs_pos = np.array(measure.find_contours(gamma2, 2 / np.pi))
     if len(cs) == 0:
@@ -219,8 +318,7 @@ def center_edge(gamma1, gamma2, factor=1, rmin=4, gamma_min=0.89):
                 points = points + (np.array(ps)/factor, )
                 peak = peak + (dust[idx], )
                 radius = radius + (re, )
-#    edge = np.array(edges, dtype=int)
-#    center = np.array(centers, dtype=int)
+
     return (center, edge, points, peak, radius)
 
 
@@ -357,8 +455,8 @@ def save_vortex(vortex, filename='vortex.h5'):
     if 'center' not in keys or 'edge' not in keys or 'points' not in keys \
         or 'radius' not in keys or 've' not in keys or 'vr' not in keys \
         or 'vc' not in keys:
-            raise RuntimeError('input dictionary must contain all of' + 
-                               ' the following keys: center, edge, points,' + 
+            raise RuntimeError('input dictionary must contain all of' +
+                               ' the following keys: center, edge, points,' +
                                ' peak, radius, ve, vr, vc')
     # check extension
     ext = filename[filename.rfind('.'):]
@@ -381,7 +479,7 @@ def save_vortex(vortex, filename='vortex.h5'):
         file['ve'] = np.array(vortex['ve'])
         file['vr'] = np.array(vortex['vr'])
         file['vc'] = np.array(vortex['vc'])
-        
+
         # ia is optional
         if 'ia' in keys:
             if None not in vortex['ia']:
@@ -426,7 +524,7 @@ def read_vortex(filename='vortex.h5'):
         vortex['ve'] = np.array(file['ve'])
         vortex['vr'] = np.array(file['vr'])
         vortex['vc'] = np.array(file['vc'])
-        # number of vortices  
+        # number of vortices
         nvortex = len(vortex['vr'])
         # because points and edge are irregular in shape, they need to be groups
         edge = ()
@@ -435,17 +533,19 @@ def read_vortex(filename='vortex.h5'):
             name = '{:d}'.format(i)
             points = points + (np.array(file['points'][name], dtype=int), )
             edge = edge + (np.array(file['edge'][name], dtype=int), )
-        
+
         vortex['edge'] = edge
         vortex['points'] = points
         # ia is optional
         keys = list(file.keys())
         if 'ia' in keys:
             vortex['ia'] = np.array(file['ia'])
+        else:
+            vortex['ia'] = None
         # rmax is optional
         if 'rmax' in keys:
             vortex['rmax'] = np.array(file['rmax'])
     else:
         raise RuntimeError('File extension must be npz or h5')
-    
+
     return vortex
