@@ -1,5 +1,8 @@
 ## Changelog
 
+**November 2023: v2.2.1 released. The changes are:</br>**
+A bug in center_edge() is now fixed. It appeared when only 1 positive or negative swirl was detected. 
+
 **June 2021: v2.2 released. The changes are:</br>**
 A new function gamma_values_parallel is added to vortex.py. It uses multiprocessing to do the parallelisation. For the data in used in demo.py, the parallel version is ~2 times faster than the v2.1 on my Macbook Pro.</br>
 

@@ -6,13 +6,19 @@ Name: vortex.py
 
 Discription: Vortex detection based on Graftieaux et al. 2001
 
-@author: Jaijia Liu at University of Sheffield
+@author: Jaijia Liu
+
+===================================================================
+November 2023: v2.2.1 released
+A bug in center_edge() is fixed. It appeared when only 1 positive or negative 
+swirl was detected.
 
 ===================================================================
 June 2021: v2.2 released.
 A new function gamma_values_parallel is added. It uses multiprocessing to do
 the parallelisation. For the data in used in demo.py, the parallel version is
 ~2 times faster than the v2.1 on my Macbook Pro.
+
 ===================================================================
 March 2021: v2.1 released.
 read_vortex and save_vortex functions introduced. Files are in format of
@@ -45,13 +51,12 @@ radius (because of change 2). All other properties of the detected vortices
 keep unchanged.
 """
 __author__ = 'Jiajia Liu'
-__copyright__ = 'Copyright 2017, The Solar Physics and Space Plasma ' + \
-                'Research Center (SP2RC)'
+__copyright__ = 'Copyright 2023, University of Sci. & Tech. China'
 __license__ = 'GPLv3'
-__version__ = '2.2'
-__date__ = '2019/11/27'
+__version__ = '2.2.1'
+__date__ = '2023/11/03'
 __maintainor__ = 'Jiajia Liu'
-__email__ = 'jj.liu@sheffield.ac.uk'
+__email__ = 'jiajialiu@ustc.edu.cn'
 
 import numpy as np
 from asda.points_in_poly import points_in_poly
@@ -295,29 +300,36 @@ def center_edge(gamma1, gamma2, factor=1, rmin=4, gamma_min=0.89):
     radius = ()
     cs = np.array(measure.find_contours(gamma2, -2 / np.pi))
     cs_pos = np.array(measure.find_contours(gamma2, 2 / np.pi))
+    # fix bug when len(cs) or len(cs_pos) is 1
+    if len(cs) == 1:
+        cs = [np.squeeze(cs), [[]]]
+    if len(cs_pos) == 1:
+        cs_pos = [np.squeeze(cs_pos), [[]]]
+
     if len(cs) == 0:
         cs = cs_pos
     elif len(cs_pos) != 0:
         cs = np.append(cs, cs_pos, 0)
     for i in range(np.shape(cs)[0]):
         v = np.rint(cs[i])
-        v = remove_duplicate(v)
-        ps = points_in_poly(v)
-        dust = []
-        for p in ps:
-            dust.append(gamma1[int(p[0]), int(p[1])])
-        if len(dust) > 1:
-            re = np.sqrt(np.array(ps).shape[0]/np.pi) / factor
-            if np.max(np.fabs(dust)) >= gamma_min and re >= rmin :
-                # allow some error around 0.9
-                # vortex with radius less than 4 pixels is not reliable
-                idx = np.where(np.fabs(dust) == np.max(np.fabs(dust)))
-                idx = idx[0][0]
-                center = center + (np.array(ps[idx])/factor, )
-                edge = edge + (np.array(v)/factor, )
-                points = points + (np.array(ps)/factor, )
-                peak = peak + (dust[idx], )
-                radius = radius + (re, )
+        if np.shape(v)[1] == 2:
+            v = remove_duplicate(v)
+            ps = points_in_poly(v)
+            dust = []
+            for p in ps:
+                dust.append(gamma1[int(p[0]), int(p[1])])
+            if len(dust) > 1:
+                re = np.sqrt(np.array(ps).shape[0]/np.pi) / factor
+                if np.max(np.fabs(dust)) >= gamma_min and re >= rmin :
+                    # allow some error around 0.9
+                    # vortex with radius less than 4 pixels is not reliable
+                    idx = np.where(np.fabs(dust) == np.max(np.fabs(dust)))
+                    idx = idx[0][0]
+                    center = center + (np.array(ps[idx])/factor, )
+                    edge = edge + (np.array(v)/factor, )
+                    points = points + (np.array(ps)/factor, )
+                    peak = peak + (dust[idx], )
+                    radius = radius + (re, )
 
     return (center, edge, points, peak, radius)
 

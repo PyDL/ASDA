@@ -12,9 +12,9 @@ def main():
     setup(
         name="ASDA",
         python_requires='>3.5.0',
-        version="2.2",
+        version="2.2.1",
         author="Jiajia Liu",
-        author_email="j.liu@qub.ac.uk",
+        author_email="jiajialiu@ustc.edu.cn",
         description=("Automated Swirl Detection Algorithm"),
         license="GPLv3",
         keywords="ASDA",
@@ -33,7 +33,7 @@ def main():
         ],
 
         classifiers=[
-            "Development Status :: 2.2 - Release",
+            "Development Status :: 2.2.1 - Release",
             "Topic :: Utilities",
             "License :: OSI Approved :: GNU General Public License (GPL)",
         ],
