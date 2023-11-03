@@ -21,7 +21,7 @@ A new function gamma_values_parallel is added to vortex.py. It uses multiprocess
 Liu, J., Nelson, C, Erdelyi, R, Automated Swirl Detection Algorithm (ASDA) and Its Application to Simulation and Observational Data, ApJ, 872, 22, 2019 (https://iopscience.iop.org/article/10.3847/1538-4357/aabd34/meta)
 
 ## Please contact the authors and ask for permissions before using any part of these code.
-Email: ~~jj.liu@sheffield.ac.uk~~ j.liu@qub.ac.uk
+Email: ~~jj.liu@sheffield.ac.uk~~ jiajialiu@ustc.edu.cn
 
 # ASDA
 Automatic Swirl Detection Algorithms
