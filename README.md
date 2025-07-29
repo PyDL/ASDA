@@ -1,5 +1,7 @@
 ## Changelog
 
+**July 2025, v2.2.2 release. The changes are:</br>**
+
 **November 2023: v2.2.1 released. The changes are:</br>**
 A bug in center_edge() is now fixed. It appeared when only 1 positive or negative swirl was detected. 
 
