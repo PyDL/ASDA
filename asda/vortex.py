@@ -9,6 +9,17 @@ Discription: Vortex detection based on Graftieaux et al. 2001
 @author: Jaijia Liu
 
 ===================================================================
+July 2025: v2.2.2 released
+According to our recent work which was online in May 2025 at arxiv 
+(https://arxiv.org/abs/2505.14384), the best threshold of Gamma1 
+should be 0.63 (2/PI). The code has been revised accordingly in this
+new version.
+
+It is also suggested in this same work that the best combination of
+kernel sizes is 5, 7, 9, 11. This will be integrated into the code in
+version 2.3
+
+===================================================================
 November 2023: v2.2.1 released
 A bug in center_edge() is fixed. It appeared when only 1 positive or negative 
 swirl was detected.
@@ -276,7 +287,7 @@ def gamma_values(vx, vy, r=3, factor=1, return_values=None, procnum=None):
     return gamma
 
 
-def center_edge(gamma1, gamma2, factor=1, rmin=4, gamma_min=0.89):
+def center_edge(gamma1, gamma2, factor=1, rmin=4, gamma_min=0.63):
     '''
     Find vortices from gamma1, and gamma2
     Output:
