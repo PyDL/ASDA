@@ -1,6 +1,10 @@
 ## Changelog
 
 **July 2025, v2.2.2 release. The changes are:</br>**
+Update vortext.py, according to our recent work, which was online in May 2025 at arxiv (https://arxiv.org/abs/2505.14384), the best threshold of Gamma1 should be 0.63 (2/PI). The code has been revised accordingly in this new version.
+
+It is also suggested in this same work that the best combination of kernel sizes is 5, 7, 9, 11. This will be integrated into the code in
+version 2.3
 
 **November 2023: v2.2.1 released. The changes are:</br>**
 A bug in center_edge() is now fixed. It appeared when only 1 positive or negative swirl was detected. 
